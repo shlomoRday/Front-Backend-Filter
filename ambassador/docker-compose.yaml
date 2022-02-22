@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  beckend:
+    build: .
+    ports:
+      - "8888:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+  db:
+    platform: linux/x86_64
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_DB: ambassador
+      POSTGRES_PASSWORD: "root"
+    volumes:
+      - .dev-dbdata:/var/lib/postgresql
+    ports:
+      - "5432:5432"

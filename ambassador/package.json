@@ -1,0 +1,42 @@
+{
+  "name": "node-ambassador",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "start": "nodemon --files src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed:ambassadors":"ts-node src/seeders/ambassador.seeder.ts",
+    "seed:products":"ts-node src/seeders/product.seeder.ts",
+    "seed:links":"ts-node src/seeders/link.seeder.ts",
+    "seed:orders":"ts-node src/seeders/order.seeder.ts"
+
+  },
+  "author": "SR",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.2",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.7.3",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.2.42",
+    "typings": "^2.1.1"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^6.0.0-alpha.7",
+    "@types/bcryptjs": "^2.4.2",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/cors": "^2.8.12",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.13",
+    "@types/jsonwebtoken": "^8.5.8",
+    "@types/node": "^17.0.18",
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.5.0",
+    "typescript": "^4.5.5"
+  }
+}
