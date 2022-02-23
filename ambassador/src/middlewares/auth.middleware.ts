@@ -24,7 +24,13 @@ export const AuthMiddleware = async (
     if (!decoded) {
       return res.status(401).json({ message: "Unauthenticated" });
     }
+   
+    const is_ambassador = req.baseUrl.indexOf("/api/ambassador") >=0;
+    
     req.user = await getRepository(User).findOne(decoded.id);
+    if(is_ambassador && !req.user?.is_ambassador || !is_ambassador && req.user?.is_ambassador){
+      return res.status(401).json({ message: "Unauthorized" });
+    }
     next();
   } catch (error) {
     return res.status(401).json({ message: "Unauthenticated" });

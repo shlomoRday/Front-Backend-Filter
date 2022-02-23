@@ -3,6 +3,7 @@ import { getRepository } from "typeorm";
 import { User } from "../entity/user.entity";
 import {hash, compare, genSaltSync} from "bcryptjs";
 import { sign } from "jsonwebtoken";
+import { Order } from "../entity/order.entity";
 
 const signToken = (id: string) => {
   return sign({ id: id }, process.env.JWT_SECRET!, {
@@ -43,7 +44,7 @@ export const Register = async (req: Request, res: Response) => {
     last_name,
     email,
     password: await hash(String(password),salt),
-    is_ambassador: false,
+    is_ambassador: req.baseUrl === "/api/ambassador",
   });
   res.send(user);
 };
@@ -77,7 +78,17 @@ export const Login = async (req: Request, res: Response) => {
 };
 
 export const AuthenticatedUser = async (req: Request, res: Response) => {
-  res.send(req.user);
+  if(req.baseUrl.includes("ambassador")){
+    return res.send(req.user);
+  }
+  const orders = await getRepository(Order).find({
+    where:{
+      user_id:req.user?.id,
+      complete:true
+    },relations:["order_items"]
+  });
+  const user = req.user;
+  user!.revenue = orders.reduce((s,item)=> s+ item.ambassador_revenue,0);
 };
 
 export const Logout = async (req: Request, res: Response) => {
@@ -112,4 +123,24 @@ export const UpdatePassword = async (req: Request, res: Response) => {
   res.send({
     message: "success",
   });
+};
+
+
+export const RestritLogin = async (req:Request, res:Response) => {
+  
+  const user = await getRepository(User).findOne({ email:req.body.email},{
+    select:["id","password","is_ambassador"]
+  })
+  if(!user){
+    return res.status(401).send({
+      message: "invalid credentials!",
+    });
+  }
+  const restrict = req.path === "/api/admin/login";
+  if (user?.is_ambassador && restrict) {
+    res.status(401).send({
+      message: "unatuthorized",
+    });
+  }
+  createSendToken(user,res);
 };

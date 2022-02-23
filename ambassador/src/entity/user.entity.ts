@@ -21,4 +21,7 @@ export class User {
 
   @Column()
   is_ambassador!: boolean;
+
+  @Column()
+  revenue: number=0;
 }

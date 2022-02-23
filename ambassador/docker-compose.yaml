@@ -20,3 +20,9 @@ services:
       - .dev-dbdata:/var/lib/postgresql
     ports:
       - "5432:5432"
+  redis:
+    image: redis
+    volumes:
+      - .dev-dbdata:/var/lib/redis
+    ports: 
+      - 6379:6379

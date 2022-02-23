@@ -4,3 +4,5 @@ declare module "express-serve-static-core" {
     user: User | undefined;
   }
 }
+
+declare module 'redis';

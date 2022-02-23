@@ -8,7 +8,6 @@ export const Orders = async (req:Request, res:Response)=>{
      where:{complete:true},
      relations:["order_items"]
  });
- 
  res.send(orders.map((order:Order)=>({
    id:order.id,
    name: order.fullName,
