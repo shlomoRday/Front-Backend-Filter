@@ -19,3 +19,4 @@ router.put("/profile", UpdateProfile);
 router.put("/updatepasword", UpdatePassword);
 
 export default router;
+ 

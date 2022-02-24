@@ -11,6 +11,7 @@ createConnection().then(async () => {
       last_name: faker.name.lastName(),
       email: faker.internet.email(),
       password: await hash("123456",salt),
+      revenue:0,
       is_ambassador: true,
     });
   }

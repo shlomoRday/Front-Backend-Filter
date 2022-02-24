@@ -5,8 +5,11 @@ import {
   GetProduct,
   UpdateProduct,
   DeleteProduct,
+  GetAllProducts,
+  GetProductsOnBackend
 } from "../controllers/product.controller";
 const router = Router();
+router.get("/",GetAllProducts).get("/backend",GetProductsOnBackend)
 router.use(AuthMiddleware);
 router
   .post("/create", CreateProduct)

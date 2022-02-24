@@ -21,7 +21,7 @@ export class Links {
       joinColumn:{name:"link_id",referencedColumnName:"id"},
       inverseJoinColumn:{name:"product_id", referencedColumnName:"id"}
   })
-  prudct!:Product[];
+  products!:Product[];
 
   @OneToMany(()=> Order, order => order.link,{
     createForeignKeyConstraints:false

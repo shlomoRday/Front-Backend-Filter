@@ -9,7 +9,7 @@ export class User {
   first_name!: string;
 
   @Column()
-  last_name!: string;
+  last_name!  :string;
 
   @Column({
     unique: true,
@@ -23,5 +23,9 @@ export class User {
   is_ambassador!: boolean;
 
   @Column()
-  revenue: number=0;
+  revenue!: number;
+
+  get fullName(): string {
+    return this.first_name + "" + this.last_name;
+}
 }

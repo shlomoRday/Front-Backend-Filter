@@ -4,7 +4,7 @@ import { User } from "../entity/user.entity";
 import {hash, compare, genSaltSync} from "bcryptjs";
 import { sign } from "jsonwebtoken";
 import { Order } from "../entity/order.entity";
-
+import { client } from "../index";
 const signToken = (id: string) => {
   return sign({ id: id }, process.env.JWT_SECRET!, {
     expiresIn: process.env.JWT_EXPIRES_IN,
@@ -78,17 +78,20 @@ export const Login = async (req: Request, res: Response) => {
 };
 
 export const AuthenticatedUser = async (req: Request, res: Response) => {
+  const raw = await client.get("user");
+  client.del("user");
+  const user = raw && JSON.parse(raw);
   if(req.baseUrl.includes("ambassador")){
-    return res.send(req.user);
+    return res.send(user);
   }
   const orders = await getRepository(Order).find({
     where:{
-      user_id:req.user?.id,
+      user_id:user?.id,
       complete:true
     },relations:["order_items"]
   });
-  const user = req.user;
   user!.revenue = orders.reduce((s,item)=> s+ item.ambassador_revenue,0);
+
 };
 
 export const Logout = async (req: Request, res: Response) => {
@@ -103,13 +106,17 @@ export const Logout = async (req: Request, res: Response) => {
 };
 
 export const UpdateProfile = async (req: Request, res: Response) => {
-  const user: any = req.user;
+  const raw = await client.get("user");
+  client.del("user");
+  const user = raw && JSON.parse(raw);
   await getRepository(User).update(user?.id, req.body);
   res.send({ message: "sucess" });
 };
 
 export const UpdatePassword = async (req: Request, res: Response) => {
-  const user: any = req.user;
+  const raw = await client.get("user");
+  client.del("user");
+  const user = raw && JSON.parse(raw);
   const { password, confirm_password } = req.body;
   if (password !== confirm_password) {
     res.status(400).send({

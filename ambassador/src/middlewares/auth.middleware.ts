@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import { User } from "../entity/user.entity";
 import { verify } from "jsonwebtoken";
+import {client} from "../index";
+
 export const AuthMiddleware = async (
   req: Request,
   res: Response,
@@ -27,10 +29,15 @@ export const AuthMiddleware = async (
    
     const is_ambassador = req.baseUrl.indexOf("/api/ambassador") >=0;
     
-    req.user = await getRepository(User).findOne(decoded.id);
-    if(is_ambassador && !req.user?.is_ambassador || !is_ambassador && req.user?.is_ambassador){
+    const user = await getRepository(User).findOne(decoded.id);
+    if(!user?.email){
+      console.log(user)
       return res.status(401).json({ message: "Unauthorized" });
     }
+    if(is_ambassador && !user.is_ambassador || !is_ambassador && user?.is_ambassador){
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    client.set("user",JSON.stringify(user));
     next();
   } catch (error) {
     return res.status(401).json({ message: "Unauthenticated" });

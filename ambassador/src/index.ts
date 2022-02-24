@@ -7,18 +7,24 @@ import routerlink from "./routes/routeLink";
 import routerOrder from "./routes/routeOrder";
 import routerAmbassador from "./routes/routeAmbassador";
 import { config } from "dotenv";
+import Redis from "ioredis";
 
-const redis = require('redis');
+//const redis = require('redis');
 
-const client = redis.createClient({
+export const client = new Redis({
   host: 'redis',
   port: 6379,
 });
+/*
+export const client = redis.createClient({
+  host: 'redis',
+  port: 6376,
+});*/
 
 config({ path: "./.env" });
 
-createConnection().then(() => {
-  
+createConnection().then(async () => {
+ !client.status && await client.connect();
   const app = express();
   app.use(express.json({ limit: "10kb" }));
   app.use(cors({ origin: ["http://127.0.0.1:3000"] }));
@@ -29,28 +35,15 @@ createConnection().then(() => {
   app.use("/api/admin/product", routerProduct);
   app.use("/api/admin/users", routerlink);
   app.use("/api/admin/orders", routerOrder);
+
   app.use("/api/ambassador", routerAmbassador);
-
-  client.on('error', (err: string) => {
-    console.log('Error ' + err);
-});
-
-client.set('foo', 'bar', (err: any, reply: any) => {
-  if (err) throw err;
-  console.log(reply);
-
-  client.get('foo', (err: any, reply: any) => {
-      if (err) throw err;
-      console.log(reply);
-  });
-})
+  app.use("/api/ambassador/products", routerProduct);
+  app.use("/api/ambassador/links", routerlink);
 
   app.listen(process.env.PORT, () => {
-    console.log("listen to port 8000");
+    console.log(`listen to port ${process.env.PORT}`);
   });
   
 });
-function session(session: any) {
-  throw new Error("Function not implemented.");
-}
+
 
