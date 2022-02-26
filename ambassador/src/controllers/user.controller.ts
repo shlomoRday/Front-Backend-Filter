@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
+
 import { getRepository } from "typeorm";
 import { client } from "..";
-import { Order } from "../entity/order.entity";
+
 import { Ranks } from "../entity/rankings.entity";
 import { User } from "../entity/user.entity";
 
@@ -13,7 +14,7 @@ export const Ambassadors = async (req: Request, res: Response) => {
 export const Ranking = async (req:Request, res:Response) =>{
    
   //const result = await client.zremrangebyscore("rankings", "+inf","-inf");
-  await client.del("user");
+  client.del("user");
   const result = await getRepository(Ranks).find({
     order:{
       score:"DESC",

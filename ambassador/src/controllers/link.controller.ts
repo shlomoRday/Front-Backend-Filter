@@ -44,3 +44,13 @@ export const Statistic =  async (req: Request, res: Response) => {
     }));
 
 }
+export const GetLinkByCode = async (req:Request, res:Response) =>{
+    const codeId = req.params.code
+     res.send(await getRepository(Links).findOne({
+       where:{
+         code:codeId
+       },
+       relations:["user", "products"]
+     }));
+   }
+   

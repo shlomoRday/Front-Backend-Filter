@@ -46,6 +46,8 @@ export class Order {
   @Column({default:true})
    complete!:boolean
 
+  @Column({nullable:true})
+  transaction_id!:string
 
   @CreateDateColumn()
   created_at!:string

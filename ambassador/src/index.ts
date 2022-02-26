@@ -31,14 +31,17 @@ createConnection().then(async () => {
   app.get("/", (req: Request, res: Response) => {
     res.send("Hello world");
   });
+  /// admin api
   app.use("/api/admin", routerUser);
   app.use("/api/admin/product", routerProduct);
   app.use("/api/admin/users", routerlink);
   app.use("/api/admin/orders", routerOrder);
 
+  /// ambassador router
   app.use("/api/ambassador", routerAmbassador);
   app.use("/api/ambassador/products", routerProduct);
   app.use("/api/ambassador/links", routerlink);
+  app.use("/api/checkout/orders", routerOrder);
 
   app.listen(process.env.PORT, () => {
     console.log(`listen to port ${process.env.PORT}`);
